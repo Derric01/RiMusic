@@ -97,7 +97,7 @@ internal fun MyDownloadHelper.createSimpleDataSourceFactory(): DataSource.Factor
                         loudnessDb = playbackData.audioConfig?.loudnessDb,
                         //playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                     ),
-                ),
+                )
         }
 
         val streamUrl = playbackData.streamUrl.let {

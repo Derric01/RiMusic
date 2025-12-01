@@ -58,22 +58,27 @@ jobs:
         
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      id: create_release
+      uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.ref }}
-        release_name: RiMusic ${{ github.ref }}
+        tag_name: ${{ github.ref_name }}
+        name: RiMusic Fork ${{ github.ref_name }}
         draft: false
         prerelease: false
-        
-    - name: Upload Release APK
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: actions/upload-release-asset@v1
+        files: |
+          composeApp/build/outputs/apk/release/*.apk
+          composeApp/build/outputs/apk/debug/*.apk
+        body: |
+          ## 🎵 RiMusic Fork ${{ github.ref_name }}
+          
+          ### 📱 Download APK
+          - **Release APK** (recommended for daily use)
+          - **Debug APK** (for testing and development)
+          
+          ### 🔧 Changes
+          See [CHANGELOG.md](https://github.com/Derric01/RiMusic/blob/master/CHANGELOG.md) for detailed information.
+          
+          ### 🐛 Bug Reports
+          Found an issue? Please [report it here](https://github.com/Derric01/RiMusic/issues).
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: composeApp/build/outputs/apk/release/composeApp-release.apk
-        asset_name: rimusic-${{ github.ref_name }}.apk
-        asset_content_type: application/vnd.android.package-archive
