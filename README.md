@@ -5,6 +5,18 @@
 <p><b>It allows the user to customize it at will.</b></p>
 <p><b>RiMusic does not collect any data.</b></p>
 
+<p>
+  <a href="https://github.com/Derric01/RiMusic/releases/latest">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/Derric01/RiMusic?color=blue&label=Download&logo=github">
+  </a>
+  <a href="https://github.com/Derric01/RiMusic/stargazers">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/Derric01/RiMusic?style=social">
+  </a>
+  <a href="https://github.com/Derric01/RiMusic/network/members">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/Derric01/RiMusic?style=social">
+  </a>
+</p>
+
 </div>
 
 ## 🔧 **Improved Fork - Critical Bug Fixes**
@@ -464,6 +476,66 @@ WARNING, the custom version is **not** an official release, download only if inv
     
 </tr>
 </table>
+
+## 🛠️ **Building from Source**
+
+### **Prerequisites**
+- Android Studio or IntelliJ IDEA
+- JDK 11 or higher
+- Android SDK 34+
+
+### **Build Instructions**
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Derric01/RiMusic.git
+   cd RiMusic
+   ```
+
+2. **Build APK**
+   ```bash
+   ./gradlew assembleDebug
+   ```
+   The APK will be generated in `composeApp/build/outputs/apk/debug/`
+
+3. **Install on device**
+   ```bash
+   ./gradlew installDebug
+   ```
+
+### **Release Build**
+For release builds with optimizations:
+```bash
+./gradlew assembleRelease
+```
+
+## 🤝 **Contributing**
+
+This fork welcomes contributions! Since the original project is archived, this is an actively maintained alternative.
+
+### **How to Contribute**
+1. **Fork this repository**
+2. **Create a feature branch**: `git checkout -b feature/your-feature-name`
+3. **Make your changes** (follow the existing code style)
+4. **Test your changes** thoroughly
+5. **Commit with descriptive message**: `git commit -m "Add: your feature description"`
+6. **Push to your fork**: `git push origin feature/your-feature-name`
+7. **Create a Pull Request**
+
+### **Areas that Need Help**
+- 🐛 **Bug fixes** - More music playback improvements
+- 🔧 **Performance optimizations**
+- 🌐 **Translations** - Help with language support
+- 📱 **UI/UX improvements**
+- 🧪 **Testing** - Help test on different devices
+
+### **Reporting Issues**
+Found a bug? Please [create an issue](https://github.com/Derric01/RiMusic/issues) with:
+- Device information
+- Steps to reproduce
+- Expected vs actual behavior
+- Logs (if available)
+
+---
 
 ## 🫂 Acknowledgments
 - [**ViMusic**](https://github.com/vfsfitvnm/ViMusic)
