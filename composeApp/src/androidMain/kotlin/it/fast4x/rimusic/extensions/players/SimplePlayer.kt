@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.util.UnstableApi
 import it.fast4x.environment.Environment
+import it.fast4x.rimusic.service.PlayableFormatNotFoundException
 import it.fast4x.environment.EnvironmentExt
 import it.fast4x.environment.models.Context
 import it.fast4x.environment.models.Context.Companion.DefaultWeb3
