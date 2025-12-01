@@ -38,20 +38,29 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
       
+    - name: List available tasks
+      run: |
+        echo "=== Available Gradle tasks ==="
+        ./gradlew tasks --group android
+        echo "=== All tasks containing 'assemble' ==="
+        ./gradlew tasks | grep -i assemble || echo "No assemble tasks found"
+        
     - name: Build debug APK
-      run: ./gradlew :composeApp:assembleDebug
+      run: ./gradlew assembleDebug
       
     - name: Build release APK  
-      run: ./gradlew :composeApp:assembleRelease
+      run: ./gradlew assembleRelease
       
     - name: List build outputs
       run: |
         echo "=== Listing all build outputs ==="
         find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
-        echo "=== composeApp build directory ==="
-        ls -la composeApp/build/outputs/apk/ 2>/dev/null || echo "composeApp/build/outputs/apk/ directory not found"
-        echo "=== All build directories ==="
-        find . -name "build" -type d -exec ls -la {}/outputs/apk/ \; 2>/dev/null || echo "No build/outputs/apk directories found"
+        echo "=== composeApp build directory structure ==="
+        find composeApp/build -type d 2>/dev/null | head -20 || echo "composeApp/build directory not found"
+        echo "=== All outputs directories ==="
+        find . -name "outputs" -type d 2>/dev/null || echo "No outputs directories found"
+        echo "=== Complete build directory tree ==="
+        find . -name "build" -type d -exec sh -c 'echo "=== $1 ==="; ls -la "$1" 2>/dev/null | head -10' _ {} \; 2>/dev/null || echo "No build directories found"
       
     - name: Upload debug APK
       uses: actions/upload-artifact@v4
