@@ -97,12 +97,17 @@ internal fun MyDownloadHelper.createSimpleDataSourceFactory(): DataSource.Factor
                         loudnessDb = playbackData.audioConfig?.loudnessDb,
                         //playbackUrl = playbackData.playbackTracking?.videostatsPlaybackUrl?.baseUrl
                     ),
-                )
+                ),
         }
 
         val streamUrl = playbackData.streamUrl.let {
             // Specify range to avoid YouTube's throttling
-            "${it}&range=0-${format.contentLength ?: 10000000}"
+            val contentLength = format.contentLength
+            val rangeEnd = when {
+                contentLength != null && contentLength > 0 -> minOf(contentLength - 1, 10000000L)
+                else -> 10000000L
+            }
+            "${it}&range=0-${rangeEnd}"
         }
 
         songUrlCache[mediaId] = streamUrl to System.currentTimeMillis() + (playbackData.streamExpiresInSeconds * 1000L)

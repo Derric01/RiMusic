@@ -900,18 +900,23 @@ class PlayerServiceModern : MediaLibraryService(),
             return
         }
 
-        val playbackHttpExeptionList = listOf(
+        val playbackHttpExceptionList = listOf(
             PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS,
             PlaybackException.ERROR_CODE_IO_READ_POSITION_OUT_OF_RANGE,
             416 // 416 Range Not Satisfiable
         )
 
-        if (error.errorCode in playbackHttpExeptionList) {
-            Timber.e("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
-            println("PlayerServiceModern onPlayerError recovered occurred errorCodeName ${error.errorCodeName} cause ${error.cause?.cause}")
-            player.pause()
-            player.prepare()
-            player.play()
+        if (error.errorCode in playbackHttpExceptionList) {
+            Timber.e("PlayerServiceModern onPlayerError HTTP error recovery - errorCode: ${error.errorCode}, message: ${error.message}, cause: ${error.cause?.cause}")
+            println("PlayerServiceModern onPlayerError HTTP error recovery - errorCode: ${error.errorCode}, message: ${error.message}")
+            
+            // Add delay to prevent rapid retry loops
+            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Main).launch {
+                kotlinx.coroutines.delay(1000L) // 1 second backoff
+                player.pause()
+                player.prepare()
+                player.play()
+            }
             return
         }
 

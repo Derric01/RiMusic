@@ -207,13 +207,13 @@ object SimplePlayer {
             )
         }
         if (streamExpiresInSeconds == null) {
-            throw Exception("playerResponseForPlaybackWithPotoken Missing stream expire time")
+            throw Exception("playerResponseForPlaybackWithPotoken Missing stream expire time for videoId: $videoId")
         }
         if (format == null) {
-            throw Exception("playerResponseForPlaybackWithPotoken Could not find format")
+            throw PlayableFormatNotFoundException("playerResponseForPlaybackWithPotoken Could not find suitable audio format for videoId: $videoId")
         }
         if (streamUrl == null) {
-            throw Exception("playerResponseForPlaybackWithPotoken Could not find stream url")
+            throw Exception("playerResponseForPlaybackWithPotoken Could not generate stream URL for videoId: $videoId")
         }
         PlaybackData(
             audioConfig,
@@ -396,13 +396,38 @@ object SimplePlayer {
             val requestBuilder = okhttp3.Request.Builder()
                 .head()
                 .url(url)
+                .addHeader("Range", "bytes=0-1") // Test with minimal range
             val response = httpClient.newCall(requestBuilder.build()).execute()
-            return response.isSuccessful
+            
+            when (response.code) {
+                200, 206 -> return true // OK or Partial Content
+                403 -> {
+                    Timber.w("SimplePlayer validateStatus: Access forbidden for URL: $url")
+                    return false
+                }
+                404 -> {
+                    Timber.w("SimplePlayer validateStatus: URL not found: $url")
+                    return false
+                }
+                429 -> {
+                    Timber.w("SimplePlayer validateStatus: Rate limited for URL: $url")
+                    return false
+                }
+                else -> {
+                    Timber.w("SimplePlayer validateStatus: HTTP ${response.code} for URL: $url")
+                    return response.isSuccessful
+                }
+            }
+        } catch (e: java.net.SocketTimeoutException) {
+            Timber.e("SimplePlayer validateStatus: Timeout validating stream url: $url")
+            return false
+        } catch (e: java.net.UnknownHostException) {
+            Timber.e("SimplePlayer validateStatus: Network error validating stream url: $url")
+            return false
         } catch (e: Exception) {
-            Timber.e("SimplePlayer validateStatus Could not validate stream url: $url")
-            println("SimplePlayer validateStatus Could not validate stream url: $url")
+            Timber.e("SimplePlayer validateStatus: Unexpected error validating stream url: $url - ${e.message}")
+            return false
         }
-        return false
     }
 
     /**
@@ -413,8 +438,8 @@ object SimplePlayer {
     ): Int? {
         return NewPipeUtils.getSignatureTimestamp(videoId)
             .onFailure {
-                Timber.e("SimplePlayer getSignatureTimestampOrNull Could not get signature timestamp: $videoId")
-                println("SimplePlayer getSignatureTimestampOrNull Could not get signature timestamp: $videoId")
+                Timber.e("SimplePlayer getSignatureTimestampOrNull: Failed to get signature timestamp for videoId: $videoId, error: ${it.message}")
+                println("SimplePlayer getSignatureTimestampOrNull: Failed for videoId: $videoId, error: ${it.message}")
             }
             .getOrNull()
     }
@@ -428,8 +453,8 @@ object SimplePlayer {
     ): String? {
         return NewPipeUtils.getStreamUrl(format, videoId)
             .onFailure {
-                Timber.e("SimplePlayer findUrlOrNull Could not get stream url: $videoId")
-                println("SimplePlayer findUrlOrNull Could not get stream url: $videoId")
+                Timber.e("SimplePlayer findUrlOrNull: Failed to get stream URL for videoId: $videoId, format itag: ${format.itag}, error: ${it.message}")
+                println("SimplePlayer findUrlOrNull: Failed for videoId: $videoId, format itag: ${format.itag}, error: ${it.message}")
             }
             .getOrNull()
     }
