@@ -46,10 +46,10 @@ jobs:
         ./gradlew tasks | grep -i assemble || echo "No assemble tasks found"
         
     - name: Build debug APK
-      run: ./gradlew assembleDebug
+      run: ./gradlew assembleFullDebug
       
     - name: Build release APK  
-      run: ./gradlew assembleRelease
+      run: ./gradlew assembleFullRelease
       
     - name: List build outputs
       run: |
@@ -68,8 +68,9 @@ jobs:
       with:
         name: rimusic-debug-apk
         path: |
-          composeApp/build/outputs/apk/debug/*.apk
-          **/build/outputs/apk/debug/*.apk
+          composeApp/build/outputs/apk/full/debug/*.apk
+          **/build/outputs/apk/full/debug/*.apk
+          **/rimusic-fullDebug.apk
         if-no-files-found: warn
         
     - name: Upload release APK
@@ -78,8 +79,9 @@ jobs:
       with:
         name: rimusic-release-apk
         path: |
-          composeApp/build/outputs/apk/release/*.apk
-          **/build/outputs/apk/release/*.apk
+          composeApp/build/outputs/apk/full/release/*.apk
+          **/build/outputs/apk/full/release/*.apk
+          **/rimusic-fullRelease.apk
         if-no-files-found: warn
         
     - name: Create Release
@@ -92,10 +94,12 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          composeApp/build/outputs/apk/release/*.apk
-          composeApp/build/outputs/apk/debug/*.apk
-          **/build/outputs/apk/release/*.apk
-          **/build/outputs/apk/debug/*.apk
+          composeApp/build/outputs/apk/full/release/*.apk
+          composeApp/build/outputs/apk/full/debug/*.apk
+          **/build/outputs/apk/full/release/*.apk
+          **/build/outputs/apk/full/debug/*.apk
+          **/rimusic-fullRelease.apk
+          **/rimusic-fullDebug.apk
         body: |
           ## 🎵 RiMusic Fork ${{ github.ref_name }}
           
