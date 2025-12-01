@@ -7,7 +7,27 @@
 
 </div>
 
-## ❗ Info
+## 🔧 **Improved Fork - Critical Bug Fixes**
+
+**⚠️ Note**: The original RiMusic project has been archived. This is an **actively maintained fork** with critical bug fixes for music playback issues.
+
+### 🐛 **Fixes Included**
+- ✅ **Fixed music playback errors** - Resolved typos and improved error handling
+- ✅ **Better stream validation** - Enhanced URL validation with proper HTTP status handling  
+- ✅ **Improved error recovery** - Added retry delays to prevent infinite loops
+- ✅ **Enhanced exception handling** - Better error messages and debugging information
+- ✅ **Fixed range header issues** - Prevents 416 Range Not Satisfiable errors from YouTube
+
+### 📋 **Changes Made**
+- Fixed `playbackHttpExeptionList` typo that caused incorrect error handling
+- Enhanced custom exceptions with proper error messages and cause preservation
+- Improved stream URL validation with timeout and network error handling
+- Fixed range header calculation to prevent YouTube throttling errors
+- Added comprehensive error logging with video IDs and context
+
+---
+
+## ❗ Original Info
 This project, is closed.
 
 ## ✨ Features
